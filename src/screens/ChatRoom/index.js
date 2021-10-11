@@ -1,23 +1,72 @@
-import React from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import React, {useState} from 'react';
+import {SafeAreaView, View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FabButton from '../../components/FabButton';
+import auth from '@react-native-firebase/auth';
 
 import { useNavigation } from '@react-navigation/native';
 
 export default function ChatRoom() {
-  const navigtion = useNavigation();
+  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  
+  function handleSignOut(){
+    auth()
+    .signOut()
+    .then(() => {
+      navigation.navigate('SignIn');
+    })
+    .catch(() => {
+      console.log('Nao possui user');
+    })
+  }
 
   return (
-    <View style={styles.container}>
-      <Text>Screen ChatRoom</Text>
-      <Button title="Login" onPress={() => navigtion.navigate('SignIn')}></Button>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.headerRoom}>
+        <View style={styles.headerRoomLeft}>
+          <TouchableOpacity onPress={() => handleSignOut()}>
+            <MaterialIcons name="arrow-back" size={28} color="#FFF" />
+          </TouchableOpacity>
+          <Text style={styles.title}>Grupos</Text>
+        </View>
+
+        <TouchableOpacity>
+          <MaterialIcons name="search" size={28} color="#FFF" />
+        </TouchableOpacity>
+      </View>
+
+      <FabButton 
+        setVisibile={() => setModalVisible(true)}
+      />
+      
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+  },
+  headerRoom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: 10,
+    backgroundColor: '#2e54d4',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+  },
+  headerRoomLeft: {
+    flexDirection: 'row',
     alignItems: 'center',
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    paddingLeft: 10,
   }
 })
