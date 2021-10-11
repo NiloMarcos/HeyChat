@@ -2,10 +2,14 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Feather'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function FabButton({ setVisibile }){
+import { useNavigation } from '@react-navigation/native';
+
+export default function FabButton({ setVisibile, userStatus }){
+
+  const navigation = useNavigation();
 
   function handleNavigateButton(){
-    setVisibile();
+    userStatus ? setVisibile() : navigation.navigate('SignIn');
   };
 
   return(
