@@ -25,12 +25,11 @@ import ChatList from '../../components/ChatList';
 export default function ChatRoom() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-
   const [user, setUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updateScreen, setUpdateScreen] = useState(false);
 
   useEffect(() => {
     const hasUser = auth().currentUser ? auth().currentUser.toJSON() : null;
@@ -74,7 +73,7 @@ export default function ChatRoom() {
     return () => {
       isActive = false;
     }
-  },[isFocused]);
+  },[isFocused, updateScreen]);
 
   function handleSignOut(){
     auth()
@@ -130,7 +129,7 @@ export default function ChatRoom() {
       />
       
       <Modal visible={modalVisible} animationType="fade" transparent={true} >
-        <ModalNewRoom setVisibile={() => setModalVisible(false)} />
+        <ModalNewRoom setVisibile={() => setModalVisible(false)} setUpdateScreen={() => setUpdateScreen(!updateScreen)} />
       </Modal>
     </SafeAreaView>
   );
