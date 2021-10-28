@@ -45,6 +45,38 @@ export default function Messages({ route }) {
 
   }, []);
 
+  async function handleSend(){
+    if(input === '') return;
+
+    await firestore()
+    .collection('MESSAGE_THREADS')
+    .doc(thread._id)
+    .collection('MESSAGES')
+    .add({
+      text: input,
+      createdAt: firestore.FieldValue.serverTimestamp(),
+      user: {
+        _id: user.uid,
+        displayName: user.displayName
+      }
+    })
+
+    await firestore()
+    .collection('MESSAGE_THREADS')
+    .doc(thread._id)
+    .set(
+      {
+        lastMessage: {
+          text: input,
+          createdAt: firestore.FieldValue.serverTimestamp(),
+        }
+      },
+      { merge: true }
+    )
+
+    setInput('');
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -54,6 +86,7 @@ export default function Messages({ route }) {
         renderItem={({ item }) => <ChatMessage data={item} />}
         showsHorizontalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
+        inverted={true}
       />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -71,7 +104,7 @@ export default function Messages({ route }) {
               />
           </View>
           <View style={styles.containerButton}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleSend()}>
               <Feather name="send" size={22} color="#FFF"/>
             </TouchableOpacity>
           </View>
